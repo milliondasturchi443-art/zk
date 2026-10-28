@@ -17,6 +17,14 @@ artifacts/
 playwright-report/
 test-results/
 
+# Android webview client (apps/android-webview)
+apps/android-webview/.gradle/
+apps/android-webview/**/build/
+apps/android-webview/local.properties
+apps/android-webview/keystore.properties
+apps/android-webview/app/zk.keystore
+*.apk
+
 # apps/mobile keeps its own standalone .git (no remote). Committing it here
 # would store a gitlink pointing at an unclonable repo, so keep it out of this
 # repository's index. To fold it in instead:

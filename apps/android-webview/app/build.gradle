@@ -1,0 +1,58 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+def keystorePropsFile = rootProject.file('keystore.properties')
+def keystoreProps = new Properties()
+def hasKeystore = keystorePropsFile.exists()
+if (hasKeystore) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
+android {
+    namespace 'app.zk.webview'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "app.zk.webview"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    // Signing credentials live in keystore.properties (NOT in git).
+    // Release/debug builds are only signed when the keystore is present locally;
+    // on CI the keystore can be injected as a secret instead.
+    signingConfigs {
+        release {
+            if (hasKeystore) {
+                storeFile rootProject.file(keystoreProps['KEYSTORE_FILE'])
+                storePassword keystoreProps['KEYSTORE_PASSWORD']
+                keyAlias keystoreProps['KEY_ALIAS']
+                keyPassword keystoreProps['KEY_PASSWORD']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            if (hasKeystore) signingConfig signingConfigs.release
+        }
+        debug {
+            if (hasKeystore) signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
