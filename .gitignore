@@ -24,6 +24,8 @@ apps/android-webview/local.properties
 apps/android-webview/keystore.properties
 apps/android-webview/app/zk.keystore
 *.apk
+*.apk.idsig
+loading video/
 
 # apps/mobile keeps its own standalone .git (no remote). Committing it here
 # would store a gitlink pointing at an unclonable repo, so keep it out of this
