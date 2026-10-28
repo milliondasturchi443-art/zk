@@ -1,0 +1,78 @@
+# Render Blueprint for ZK
+#
+#   zk-admin -> web service  (Next.js admin console,   apps/admin)
+#   zk-web   -> static site  (Vite SPA student client, apps/web)
+#
+# The database is Supabase (Postgres), not MongoDB — Render hosts no DB here.
+# After this blueprint syncs, fill the `sync: false` env vars in the Render
+# dashboard (Environment tab of each service) with your Supabase project's
+# URL and anon key, then trigger a redeploy (both are inlined at build time).
+
+services:
+  # ── Admin console (Next.js) ────────────────────────────────────────────────
+  - type: web
+    name: zk-admin
+    runtime: node
+    plan: free
+    branch: main
+    autoDeployTrigger: commit
+
+    # Workspaces are hoisted at the repo root, so build and start from there.
+    buildCommand: npm install --no-audit --no-fund && npm run build:shared && npm run build:admin
+    startCommand: npm run start --workspace admin
+
+    # /login renders without auth, so it is a stable liveness probe.
+    healthCheckPath: /login
+
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # NEXT_PUBLIC_* is inlined during `next build`, so it must exist before it.
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+
+  # ── Student web client (Vite SPA, static site) ────────────────────────────
+  - type: web
+    name: zk-web
+    runtime: static
+    branch: main
+    autoDeployTrigger: commit
+
+    buildCommand: npm install --no-audit --no-fund && npm run build:shared && npm run build:web
+    staticPublishPath: apps/web/dist
+
+    # React Router needs a catch-all so deep links and refreshes don't 404.
+    # Render only rewrites paths that don't map to a real file, so /assets/*,
+    # /sw.js and /manifest.webmanifest keep serving from disk.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+    headers:
+      # Vite hashes filenames under /assets/, so these are safe to pin forever.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      # The PWA shell must revalidate so users pick up new deploys.
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+
+    envVars:
+      # VITE_* is inlined by Vite at build time.
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false

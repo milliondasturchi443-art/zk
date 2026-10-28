@@ -1,0 +1,185 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   ZK design tokens — white canvas, black type, light grey surfaces.
+   Mirrors apps/mobile/src/theme/index.ts.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-canvas: #ffffff;
+  --color-surface: #f4f4f5;
+  --color-raised: #fafafa;
+  --color-line: #e7e7e9;
+  --color-line-strong: #d6d6d9;
+  --color-ink: #0a0a0a;
+  --color-ink-pressed: #2a2a2e;
+  --color-muted: #6e6e73;
+  --color-faint: #9b9ba1;
+  --color-primary: #0a0a0a;
+  --color-on-primary: #ffffff;
+  --color-success: #12724a;
+  --color-success-surface: #e9f6ef;
+  --color-danger: #b3261e;
+  --color-danger-surface: #fdecea;
+  --color-warning: #8a6100;
+  --color-warning-surface: #fff6e0;
+
+  --radius-card: 20px;
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 22px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .zk-logo {
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+  }
+
+  .zk-display {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1.15;
+  }
+
+  .zk-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.25;
+  }
+
+  .zk-subtitle {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .zk-body {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 22px;
+  }
+
+  .zk-small {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+  }
+
+  .zk-caption {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .zk-button {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .zk-card {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .zk-pressable {
+    transition:
+      opacity 0.12s ease,
+      transform 0.12s ease;
+  }
+
+  .zk-pressable:active {
+    opacity: 0.9;
+    transform: scale(0.995);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Math layout primitives used by MathText (fractions, roots, scripts).
+--------------------------------------------------------------------------- */
+.zk-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 4px;
+  transform: translateY(2px);
+  vertical-align: middle;
+}
+
+.zk-frac-part {
+  text-align: center;
+  padding: 0 3px;
+}
+
+.zk-frac-bar {
+  height: 1px;
+  background: currentColor;
+  align-self: stretch;
+  margin: 1px 3px;
+}
+
+.zk-sqrt {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.zk-sqrt-body {
+  border-top: 1px solid currentColor;
+  padding-top: 1px;
+}
+
+.zk-overline {
+  border-top: 1px solid currentColor;
+  padding-top: 1px;
+}
+
+/* The horizontal question strip keeps its scrollbar hidden, like the mobile app. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
