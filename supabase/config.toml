@@ -387,6 +387,12 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+[functions.delete-account]
+# The client always sends the signed-in user's access token in the
+# Authorization header, so the platform's built-in JWT check is exactly the
+# gate we want here. The function body additionally re-verifies the password.
+verify_jwt = true
+
 [analytics]
 enabled = true
 port = 54327
